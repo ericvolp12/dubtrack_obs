@@ -12,14 +12,18 @@ router.get('/', function (req, res, next) {
 router.get('/room/:roomID', function (req, res) {
     var io = req.app.get('socketio');
     io.on('connection', function(socket) {
+        var previousSongName = '';
         function fetchStuff(){
             dubtrack.getRoomNowPlaying(req.params.roomID).then(function (songName) {
-                socket.emit('songName', songName);
+                if(previousSongName != songName){
+                    socket.emit('songName', songName);
+                    previousSongName = songName;
+                }
             }, function (err) {
                 socket.emit('songName', err);
             });
         }
-        setInterval(fetchStuff, 3000)
+        setInterval(fetchStuff, 5000)
     });
 
     if (req.params.roomID) {
