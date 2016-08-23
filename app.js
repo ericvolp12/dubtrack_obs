@@ -11,7 +11,7 @@ var users = require('./routes/users');
 
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io').listen(server);
 app.set('socketio', io);
 
 // view engine setup
