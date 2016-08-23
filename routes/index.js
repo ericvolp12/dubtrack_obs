@@ -44,13 +44,13 @@ router.get('/room/:roomID', function (req, res) {
 });
 
 function fetchStuff(){
-    for (var roomID in rooms) {
+    for (let roomID in rooms) {
         // skip loop if the property is from prototype
         if (!rooms.hasOwnProperty(roomID)) continue;
-        console.log("debug");
         let room = rooms[roomID];
         dubtrack.getRoomNowPlaying(roomID).then(function(songName) {
             if(room.songName !== songName){
+                console.log("Song has changed for room: ", roomID);
                 room.songName = songName;
                 for(let i = 0; i < sockets.length; ++i) {
                     sockets[i].emit('songName', songName);
