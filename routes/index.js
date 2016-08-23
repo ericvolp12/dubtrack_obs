@@ -48,7 +48,7 @@ function fetchStuff(){
         // skip loop if the property is from prototype
         if (!rooms.hasOwnProperty(roomID)) continue;
         let room = rooms[roomID];
-        dubtrack.getRoomNowPlaying(req.params.roomID).then(function(songName) {
+        dubtrack.getRoomNowPlaying(roomID).then(function(songName) {
             if(room.songName != songName){
                 for(let socket in room.sockets) {
                     socket.emit('songName', songName);
