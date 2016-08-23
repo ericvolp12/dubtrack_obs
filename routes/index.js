@@ -29,9 +29,9 @@ router.get('/room/:roomID', function (req, res) {
 
 function fetchStuff(roomID, socket){
     dubtrack.getRoomNowPlaying(roomID).then(function (songName) {
-        socket.emit('songName', {songName});
+        socket.emit('songName', songName);
     }, function (err) {
-        socket.emit('songName', {err});
+        socket.emit('songName', err);
     });
 }
 
