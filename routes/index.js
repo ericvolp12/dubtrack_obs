@@ -52,14 +52,14 @@ function fetchStuff(){
             if(room.songName !== songName){
                 console.log("Song has changed for room: ", roomID);
                 room.songName = songName;
-                for(let i = 0; i < sockets.length; ++i) {
-                    sockets[i].emit('songName', songName);
+                for(let i = 0; i < room.sockets.length; ++i) {
+                    room.sockets[i].emit('songName', songName);
                 }
             }
         }, function (err) {
             room.songName = songName;
-            for(let i = 0; i < sockets.length; ++i) {
-                sockets[i].emit('songName', err);
+            for(let i = 0; i < room.sockets.length; ++i) {
+                room.sockets[i].emit('songName', err);
             }
         });
     }
