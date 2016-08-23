@@ -17,11 +17,12 @@ function getRoomNowPlaying(roomID) {
 
             res.on('end', function(){
                var apiResponse = JSON.parse(body);
-                if(apiResponse.currentSong.songid) {
+                if(apiResponse.currentSong) {
                     console.log("Got response from Dubtrack API, currently playing song is: " + apiResponse.currentSong.songid + " in room: " + roomID);
                     resolve(apiResponse.currentSong.songid);
                 }else{
                     console.log("No current song found for room: " + roomID);
+                    console.log("API response: ", apiResponse);
                     reject("No current song found for room: " + roomID);
                 }
             });
