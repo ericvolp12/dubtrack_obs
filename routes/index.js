@@ -2,7 +2,7 @@
 var app = require('express');
 var router = app.Router();
 var dubtrack = require('./modules/dubtrack');
-
+var rooms = {};
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -12,33 +12,56 @@ router.get('/', function (req, res, next) {
 router.get('/room/:roomID', function (req, res) {
     var io = req.app.get('socketio');
     io.on('connection', function(socket) {
-        var previousSongName = '';
-        function fetchStuff(){
-            dubtrack.getRoomNowPlaying(req.params.roomID).then(function (songName) {
-                if(previousSongName != songName){
-                    socket.emit('songName', songName);
-                    previousSongName = songName;
-                }
-            }, function (err) {
-                socket.emit('songName', err);
-            });
+        if(rooms[req.params.roomID]){
+            if(rooms[req.params.roomID].sockets){
+                rooms[req.params.roomID].sockets.push(socket);
+            }else{
+                rooms[req.params.roomID].sockets = [];
+                rooms[req.params.roomID].sockets.push(socket);
+            }
         }
-        setInterval(fetchStuff, 5000)
     });
 
     if (req.params.roomID) {
-        dubtrack.getRoomNowPlaying(req.params.roomID).then(function(songName){
-            res.render('nowPlaying', {songName:songName});
-
-        }, function(err){
-            res.status(404).send(err);
-        })
+        if(rooms[req.params.roomID]){
+            res.render('nowPlaying', rooms[req.params.roomID].songName);
+        }else {
+            dubtrack.getRoomNowPlaying(req.params.roomID).then(function (songName) {
+                rooms[req.params.roomID] = {
+                    songName:songName
+                };
+                res.render('nowPlaying', {songName: songName});
+            }, function (err) {
+                rooms[req.params.roomID] = {
+                    songName:err
+                };
+                res.status(404).send(err);
+            })
+        }
     } else {
         res.status(400).send("Please specify a room ID!");
     }
-
-
 });
+
+function fetchStuff(){
+    for (var roomID in rooms) {
+        // skip loop if the property is from prototype
+        if (!rooms.hasOwnProperty(roomID)) continue;
+        let room = rooms[roomID];
+        dubtrack.getRoomNowPlaying(req.params.roomID).then(function(songName) {
+            if(room.songName != songName){
+                for(let socket in room.sockets) {
+                    socket.emit('songName', songName);
+                }
+            }
+        }, function (err) {
+            for(let socket in room.sockets) {
+                socket.emit('songName', err);
+            }
+        });
+    }
+}
+setInterval(fetchStuff, 5000);
 
 
 
