@@ -10,7 +10,8 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/room/:roomID', function (req, res) {
-    app.io.on('connection', function(socket) {
+    var io = req.app.get('socketio');
+    io.on('connection', function(socket) {
         setTimeout(dubtrack.getRoomNowPlaying.then(function (songName) {
             socket.emit('songName', {songName});
         }, function (err) {
