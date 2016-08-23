@@ -1,7 +1,8 @@
+'use strict';
 /**
  * Created by Eric Volpert on 8/23/2016.
  */
-https = require("https");
+var https = require("https");
 let apiBASE = "https://api.dubtrack.fm";
 
 function getRoomNowPlaying(roomID) {
