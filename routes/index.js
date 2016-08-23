@@ -12,7 +12,14 @@ router.get('/', function (req, res, next) {
 router.get('/room/:roomID', function (req, res) {
     var io = req.app.get('socketio');
     io.on('connection', function(socket) {
-        setInterval(fetchStuff(req.params.roomID, socket), 3000)
+        function fetchStuff(){
+            dubtrack.getRoomNowPlaying(req.params.roomID).then(function (songName) {
+                socket.emit('songName', songName);
+            }, function (err) {
+                socket.emit('songName', err);
+            });
+        }
+        setInterval(fetchStuff, 3000)
     });
 
     if (req.params.roomID) {
@@ -25,15 +32,11 @@ router.get('/room/:roomID', function (req, res) {
     } else {
         res.status(400).send("Please specify a room ID!");
     }
+
+
 });
 
-function fetchStuff(roomID, socket){
-    dubtrack.getRoomNowPlaying(roomID).then(function (songName) {
-        socket.emit('songName', songName);
-    }, function (err) {
-        socket.emit('songName', err);
-    });
-}
+
 
 
 
