@@ -49,14 +49,16 @@ function fetchStuff(){
         if (!rooms.hasOwnProperty(roomID)) continue;
         let room = rooms[roomID];
         dubtrack.getRoomNowPlaying(roomID).then(function(songName) {
-            if(room.songName != songName){
-                for(let socket in room.sockets) {
-                    socket.emit('songName', songName);
+            if(room.songName !== songName){
+                room.songName = songName;
+                for(let i = 0; i < sockets.length; ++i) {
+                    sockets[i].emit('songName', songName);
                 }
             }
         }, function (err) {
-            for(let socket in room.sockets) {
-                socket.emit('songName', err);
+            room.songName = songName;
+            for(let i = 0; i < sockets.length; ++i) {
+                sockets[i].emit('songName', err);
             }
         });
     }
