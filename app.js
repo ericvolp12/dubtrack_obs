@@ -5,7 +5,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var dubtrack = require("routes/modules/dubtrack");
+var dubtrack = require("./routes/modules/dubtrack");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
