@@ -24,7 +24,7 @@ router.get('/room/:roomID', function (req, res) {
 
     if (req.params.roomID) {
         if(rooms[req.params.roomID]){
-            res.render('nowPlaying', rooms[req.params.roomID].songName);
+            res.render('nowPlaying', {songName:rooms[req.params.roomID].songName});
         }else {
             dubtrack.getRoomNowPlaying(req.params.roomID).then(function (songName) {
                 rooms[req.params.roomID] = {
