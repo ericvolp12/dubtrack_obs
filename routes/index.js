@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var dubtrack = reqiure('./modules/dubtrack');
+var dubtrack = require('./modules/dubtrack');
 
 
 /* GET home page. */
