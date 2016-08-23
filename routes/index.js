@@ -12,12 +12,13 @@ router.get('/', function (req, res, next) {
 router.get('/room/:roomID', function (req, res) {
     var io = req.app.get('socketio');
     io.on('connection', function(socket) {
-        setTimeout(dubtrack.getRoomNowPlaying.then(function (songName) {
+        setTimeout(dubtrack.getRoomNowPlaying(req.params.roomID).then(function (songName) {
             socket.emit('songName', {songName});
         }, function (err) {
             socket.emit('songName', {err});
         }), 3000)
     });
+
     if (req.params.roomID) {
         dubtrack.getRoomNowPlaying(req.params.roomID).then(function(songName){
             res.render('nowPlaying', {songName:songName});
