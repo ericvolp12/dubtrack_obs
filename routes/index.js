@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
 router.get('/room/:roomID', function (req, res) {
     var io = req.app.get('socketio');
     io.on('connection', function(socket) {
-        setTimeout(fetchStuff(req.params.roomID, socket), 3000)
+        setInterval(fetchStuff(req.params.roomID, socket), 3000)
     });
 
     if (req.params.roomID) {
